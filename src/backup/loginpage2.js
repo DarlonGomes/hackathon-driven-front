@@ -1,40 +1,26 @@
 import { Container, Row , Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import logo from '../assets/images/logo.png';
-import { useState, useContext} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signIn } from '../services/userHandler.js';
-import { UserContext } from '../context/userContext.js';
+import background from '../assets/images/landscape.jpeg'
+import { useState } from 'react';
+
 export default function LoginPage() {
-    const { setData, setToken} = useContext(UserContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const [isDisabled, setIsDisabled] = useState(false)
-    const navigate = useNavigate();
-    
 
-    async function validateUser(event){
-        event.preventDefault();
-        const obj = {
-            email: email,
-            password: password
-        }
-        const response = await signIn(obj);
-        
-        if(response === false){
-            setIsDisabled(false);
-            alert("Your credentials don't match.")
-            return
-        }
-        setData(response.userData)
-        setToken(response.token)
-        setTimeout(()=>{
-            setIsDisabled(false);
-            navigate(`/${response.userData.name}`)
-        }, "1000")
+    const backgroundStyle = {
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        overflow: 'hidden',
     }
 
+    function validateUser(event){
+        event.preventDefault();
+
+    }
     return (
+        <NotAWrapper >
             <Container >
                 <Row>
                     <Col>
@@ -74,7 +60,7 @@ export default function LoginPage() {
                                 <h4> Forgot password?</h4>
                                 <div className='sign-up'>
                                     <h4>Don't have an account?</h4>
-                                    <button onClick={()=>{navigate('/sign-up')}}>SIGN UP</button>
+                                    <button>SIGN UP</button>
                                 </div>
                         </LoginContent>
                     </Col>
@@ -90,6 +76,7 @@ export default function LoginPage() {
                     </Col>
                 </Row>
             </Container> 
+        </NotAWrapper>
     )
 }
 
@@ -105,13 +92,12 @@ const LoginContent = styled.div`
         font-weight: 600;
         font-size: 20px;
         line-height: 24px;
-        color: #A3A3A3;
+        color: #dfdfdf;
     }
 
     .sign-up{
         display: flex;
         justify-content: space-between;
-        align-items: center;
         width: 438px;
         margin-top: 70px;
         font-family: 'Lato';
@@ -123,7 +109,7 @@ const LoginContent = styled.div`
         }
 
         button{
-            width: 150px;
+            width: 169px;
             height: 45px;
             border: 2px solid #D43838;
             border-radius: 5px;
@@ -147,11 +133,11 @@ const Form = styled.form`
     input{
         width: 388px;
         height: 45px;
-        background: #FFFFFF;
+        background: transparent;
+        box-sizing: border-box;
+        padding: 0 10px;
         border: 1px solid #E74D4D;
         border-radius: 0px 5px 5px 0px;
-        box-sizing: border-box;
-        padding: 0 15px;
         font-weight: 400;
         font-size: 16px;
         line-height: 16px;
@@ -161,12 +147,11 @@ const Form = styled.form`
             font-weight: 400;
             font-size: 16px;
             line-height: 16px;
-            color: #A3A3A3;
+            color: #FFFFFF;
         }
         :focus {
             outline: none;
         }
-        
     }
 
     .input-theme{
@@ -255,4 +240,11 @@ const InfoSide = styled.div`
         font-size: 30px;
         line-height: 32px;
     }
+`;
+
+const NotAWrapper = styled.div`
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(0deg, rgba(191, 43, 43, 0.7), rgba(255, 255, 255, 0.7)), url(${background}) no-repeat ;
+    background-size: cover;
 `;
