@@ -15,6 +15,8 @@ export default function SignupPage() {
 
     function validateUser(event){
         event.preventDefault();
+        setIsDisabled(true);
+
         const obj = {
             name: name,
             email: email,
@@ -24,6 +26,10 @@ export default function SignupPage() {
         const response = signUp(obj);
         if(response.status < 300){
             console.log("Cadastrei")
+            setTimeout(()=>{
+                setIsDisabled(false);
+                navigate('/')
+            }, "1000")
         }
     }
     return (

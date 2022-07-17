@@ -7,7 +7,7 @@ const TOKEN = process.env.TOKEN_LOCAL;
 export async function signIn ( obj ){
     console.log(obj)
     try {
-        const response = await axios.post(`${URL}/sign-in`, obj)
+        const response = await axios.post('https://not-a-bear.herokuapp.com/sign-in', obj)
         if(response.status < 300){
             
             const token = {
