@@ -29,9 +29,10 @@ export default function LoginPage() {
         }
         setData(response.userData)
         setToken(response.token)
+        console.log(response)
         setTimeout(()=>{
             setIsDisabled(false);
-            navigate(`/${response.userData.name}`)
+            navigate(`/banana`)
         }, "1000")
     }
 
