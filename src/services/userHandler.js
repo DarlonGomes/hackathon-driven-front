@@ -1,13 +1,12 @@
 import axios from 'axios';
 
-const URL = process.env.URI;
-const USER = process.env.USER_LOCAL;
-const TOKEN = process.env.TOKEN_LOCAL;
-
+const API_SIGNIN = 'https://not-bear-app.herokuapp.com/sign-in'
+const API_SIGNUP = 'https://not-bear.app.herokuapp.com/sign-up'
 export async function signIn ( obj ){
-    console.log(obj)
+    
     try {
-        const response = await axios.post('https://not-a-bear.herokuapp.com/sign-in', obj)
+        
+        const response = await axios.post(API_SIGNIN, obj)
         if(response.status < 300){
             
             const token = {
@@ -17,7 +16,7 @@ export async function signIn ( obj ){
               };
     
             // localStorage.setItem(USER, JSON.stringify(userData));
-            localStorage.setItem(TOKEN, token);
+            //  localStorage.setItem(USER_TOKEN, token);
             return token
         }
     } catch (error) {
@@ -27,7 +26,7 @@ export async function signIn ( obj ){
 
 export async function signUp ( obj ){
     try {
-        const response = await axios.post(`${URL}/sign-up`, obj)
+        const response = await axios.post(API_SIGNUP, obj)
         if(response.status < 300){
             return true
         }
@@ -36,22 +35,22 @@ export async function signUp ( obj ){
     }
 }
 
-export async function autoLogin (obj){
-    //Trying to validate user token, need to think about the back-end validation and response
-    const header = JSON.parse(localStorage.getItem(TOKEN));
-    try {
-        if(header){
-            const response = await axios.post(`${URL}/token-check`, header)
-        }
+// export async function autoLogin (obj){
+//     //Trying to validate user token, need to think about the back-end validation and response
+//     const header = JSON.parse(localStorage.getItem(USER_TOKEN));
+//     try {
+//         if(header){
+//             const response = await axios.post(`${URL}/token-check`, header)
+//         }
         
-    } catch (error) {
+//     } catch (error) {
         
-    }
-}
+//     }
+// }
 
-export async function logout (){
+// export async function logout (){
     
-    //clear context
-    localStorage.clearItem(USER)
-    localStorage.clearItem(TOKEN)
-}
+//     //clear context
+//     localStorage.clearItem(USER_LOCAL)
+//      localStorage.clearItem(USER_TOKEN)
+//  }
