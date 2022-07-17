@@ -1,10 +1,11 @@
 import { Container, Row , Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import logo from '../assets/images/logo.png';
-import { useState, useContext} from 'react';
+import { useState, useContext, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signIn } from '../services/userHandler.js';
+import { signIn, autoLogin } from '../services/userHandler.js';
 import { UserContext } from '../context/userContext.js';
+import { ThreeDots } from "react-loader-spinner";
 
 export default function LoginPage() {
     const { setData, setToken} = useContext(UserContext);
@@ -16,6 +17,7 @@ export default function LoginPage() {
 
     async function validateUser(event){
         event.preventDefault();
+        setIsDisabled(true)
         const obj = {
             email: email,
             password: password
@@ -27,15 +29,44 @@ export default function LoginPage() {
             alert("Your credentials don't match.")
             return
         }
-        setData(response.userData)
+        setData(response.data)
         setToken(response.token)
-        console.log(response)
         setTimeout(()=>{
             setIsDisabled(false);
-            navigate(`/banana`)
+            navigate(`/board`)
         }, "1000")
     }
 
+    const ToggleButton = () => {
+        if(isDisabled){
+            
+            return(
+                <button disabled={true} ><ThreeDots  color="#FFFFFF" height={17} width={"100%"} /></button>
+            )
+        }else{
+            return(
+                <button type='submit'>LOG IN</button>
+            )
+        }
+        
+    }
+
+    useEffect(()=>{
+        const response = autoLogin({setData,setToken})
+        
+        if(response === true){
+            setIsDisabled(true)
+            setTimeout(()=>{
+                setIsDisabled(false);
+                navigate(`/board`);
+            },"1000")
+        }else{
+            
+            setIsDisabled(false)
+            return;
+        }
+        
+    },[])
     return (
             <Container >
                 <Row>
@@ -70,7 +101,7 @@ export default function LoginPage() {
                                     disabled= {isDisabled} 
                                     ></input>
                                 </div>
-                                <button type='submit'>LOG IN</button>
+                                <ToggleButton />
                                 
                             </Form>
                                 <h4> Forgot password?</h4>
@@ -102,14 +133,12 @@ const LoginContent = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     h4{
         font-weight: 600;
         font-size: 20px;
         line-height: 24px;
         color: #A3A3A3;
     }
-
     .sign-up{
         display: flex;
         justify-content: space-between;
@@ -123,7 +152,6 @@ const LoginContent = styled.div`
             line-height: 29px;
             color: #000000;
         }
-
         button{
             width: 150px;
             height: 45px;
@@ -141,7 +169,6 @@ const LoginContent = styled.div`
 const Form = styled.form`
     
     font-family: 'Lato';
-
     .input-wrapper{
         display: flex;
         
@@ -170,7 +197,6 @@ const Form = styled.form`
         }
         
     }
-
     .input-theme{
         width: 50px;
         height: 45px;
@@ -186,7 +212,6 @@ const Form = styled.form`
         justify-content: center;
         align-items: center;
     }
-
     button{
         width: 438px;
         height: 45px;
@@ -199,7 +224,6 @@ const Form = styled.form`
         line-height: 16px;
         color: #FFFFFF;
     }
-
 `;
 
 const NotALogo = styled.div`
@@ -207,14 +231,12 @@ const NotALogo = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     img{
         width: 150px;
         height: 150px;
         object-fit: cover;
         margin-bottom: 10px;
     }
-
     h1{
         width: 425px;
         height: 87px;
@@ -226,7 +248,6 @@ const NotALogo = styled.div`
         color: #000000;
         margin-bottom: 120px;
     }
-
     .red{
         color: #E74D4D;
     }
@@ -251,7 +272,6 @@ const InfoSide = styled.div`
         line-height: 50px;
         margin-bottom: 30px;
     }
-
     p{
         font-family: 'Lato';
         font-size: 30px;

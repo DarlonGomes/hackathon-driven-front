@@ -1,12 +1,13 @@
 import { Container, Row , Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import logo from '../assets/images/logo.png';
+import background from '../assets/images/landscape.jpeg'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../services/userHandler.js';
-import { ThreeDots } from 'react-loader-spinner';
 
-export default function SignupPage() {
+
+export default function LoginPage() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,32 +28,16 @@ export default function SignupPage() {
         }
         const response = signUp(obj);
         if(response.status < 300){
-            
+            console.log("Cadastrei")
             setTimeout(()=>{
                 setIsDisabled(false);
                 navigate('/')
             }, "1000")
         }
-        else{
-            alert("Your credentials are invalid. Try again.")
-            setIsDisabled(false)
-        }
-    }
-    const ToggleButton = () => {
-        if(isDisabled){
-            
-            return(
-                <button disabled={true} ><ThreeDots  color="#FFFFFF" height={17} width={"100%"} /></button>
-            )
-        }else{
-            return(
-                <button type='submit'>SIGN UP</button>
-            )
-        }
-        
     }
     return (
-            <Container >
+           <NotAWrapper>
+             <Container >
                 <Row>
                     <Col>
                         <SignUpContent>
@@ -107,7 +92,7 @@ export default function SignupPage() {
                                     disabled= {isDisabled} 
                                     ></input>
                                 </div>
-                                <ToggleButton/>
+                                <button type='submit'>SIGN UP</button>
                                 
                             </Form>
                                 <div className='sign-up'>
@@ -128,6 +113,7 @@ export default function SignupPage() {
                     </Col>
                 </Row>
             </Container> 
+           </NotAWrapper>
     )
 }
 
@@ -143,13 +129,13 @@ const SignUpContent = styled.div`
         font-weight: 600;
         font-size: 20px;
         line-height: 24px;
-        color: #A3A3A3;
+        color: #dfdfdf;
     }
 
     .sign-up{
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         width: 438px;
         margin-top: 70px;
         font-family: 'Lato';
@@ -161,7 +147,7 @@ const SignUpContent = styled.div`
         }
 
         button{
-            width: 150px;
+            width: 130px;
             height: 45px;
             border: 2px solid #D43838;
             border-radius: 5px;
@@ -182,15 +168,14 @@ const Form = styled.form`
         display: flex;
         
     }
-
     input{
         width: 388px;
         height: 45px;
-        background: #FFFFFF;
+        background: transparent;
+        box-sizing: border-box;
+        padding: 0 10px;
         border: 1px solid #E74D4D;
         border-radius: 0px 5px 5px 0px;
-        box-sizing: border-box;
-        padding: 0 15px;
         font-weight: 400;
         font-size: 16px;
         line-height: 16px;
@@ -200,12 +185,11 @@ const Form = styled.form`
             font-weight: 400;
             font-size: 16px;
             line-height: 16px;
-            color: #A3A3A3;
+            color: #292929;
         }
         :focus {
             outline: none;
         }
-        
     }
 
     .input-theme{
@@ -276,7 +260,7 @@ const InfoSide = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #E74D4D 0%, #B52323 100%);
+    background: linear-gradient(0deg, #E74D4D 0%, #B52323 100%) ;
     box-sizing: border-box;
     padding: 0px 66px;
     font-weight: 400;
@@ -294,4 +278,11 @@ const InfoSide = styled.div`
         font-size: 30px;
         line-height: 32px;
     }
+`;
+
+const NotAWrapper = styled.div`
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.7)), url(${background}) no-repeat ;
+    background-size: cover;
 `;

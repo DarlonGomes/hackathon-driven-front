@@ -4,8 +4,6 @@ import logo from '../assets/images/logo.png';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../services/userHandler.js';
-import { ThreeDots } from 'react-loader-spinner';
-
 export default function SignupPage() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('');
@@ -27,29 +25,12 @@ export default function SignupPage() {
         }
         const response = signUp(obj);
         if(response.status < 300){
-            
+            console.log("Cadastrei")
             setTimeout(()=>{
                 setIsDisabled(false);
                 navigate('/')
             }, "1000")
         }
-        else{
-            alert("Your credentials are invalid. Try again.")
-            setIsDisabled(false)
-        }
-    }
-    const ToggleButton = () => {
-        if(isDisabled){
-            
-            return(
-                <button disabled={true} ><ThreeDots  color="#FFFFFF" height={17} width={"100%"} /></button>
-            )
-        }else{
-            return(
-                <button type='submit'>SIGN UP</button>
-            )
-        }
-        
     }
     return (
             <Container >
@@ -107,7 +88,7 @@ export default function SignupPage() {
                                     disabled= {isDisabled} 
                                     ></input>
                                 </div>
-                                <ToggleButton/>
+                                <button type='submit'>SIGN UP</button>
                                 
                             </Form>
                                 <div className='sign-up'>

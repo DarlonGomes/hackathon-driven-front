@@ -2,22 +2,39 @@ import { Container, Row , Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import logo from '../assets/images/logo.png';
 import background from '../assets/images/landscape.jpeg'
-import { useState } from 'react';
+import { useState, useContext} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signIn } from '../services/userHandler.js';
+import { UserContext } from '../context/userContext.js';
 
 export default function LoginPage() {
+    const { setData, setToken} = useContext(UserContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const [isDisabled, setIsDisabled] = useState(false)
+    const navigate = useNavigate();
+    
 
-    const backgroundStyle = {
-        backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        overflow: 'hidden',
-    }
-
-    function validateUser(event){
+    async function validateUser(event){
         event.preventDefault();
-
+        const obj = {
+            email: email,
+            password: password
+        }
+        const response = await signIn(obj);
+        
+        if(response === false){
+            setIsDisabled(false);
+            alert("Your credentials don't match.")
+            return
+        }
+        setData(response.userData)
+        setToken(response.token)
+        console.log(response)
+        setTimeout(()=>{
+            setIsDisabled(false);
+            navigate(`/banana`)
+        }, "1000")
     }
     return (
         <NotAWrapper >
@@ -147,7 +164,7 @@ const Form = styled.form`
             font-weight: 400;
             font-size: 16px;
             line-height: 16px;
-            color: #FFFFFF;
+            color: #292929;
         }
         :focus {
             outline: none;
@@ -222,7 +239,7 @@ const InfoSide = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #E74D4D 0%, #B52323 100%);
+    background: linear-gradient(0deg, #E74D4D 0%, #B52323 100%) ;
     box-sizing: border-box;
     padding: 0px 66px;
     font-weight: 400;
@@ -245,6 +262,6 @@ const InfoSide = styled.div`
 const NotAWrapper = styled.div`
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(0deg, rgba(191, 43, 43, 0.7), rgba(255, 255, 255, 0.7)), url(${background}) no-repeat ;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.7)), url(${background}) no-repeat ;
     background-size: cover;
 `;

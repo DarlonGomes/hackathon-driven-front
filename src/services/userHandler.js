@@ -8,16 +8,19 @@ export async function signIn ( obj ){
         
         const response = await axios.post(API_SIGNIN, obj)
         if(response.status < 300){
-            
+            console.log(response)
             const token = {
                 headers: {
                   Authorization: `Bearer ${response.data.token}`,
                 },
               };
-    
-            // localStorage.setItem(USER, JSON.stringify(userData));
-            //  localStorage.setItem(USER_TOKEN, token);
-            return token
+            const data = {
+                name: response.data.name,
+                email: response.data.email
+            }
+              localStorage.setItem("NotAUserStorage", JSON.stringify(data));
+              localStorage.setItem("NotATokenStorage", JSON.stringify(token));
+            return {token , data}
         }
     } catch (error) {
         return false
@@ -35,22 +38,26 @@ export async function signUp ( obj ){
     }
 }
 
-// export async function autoLogin (obj){
-//     //Trying to validate user token, need to think about the back-end validation and response
-//     const header = JSON.parse(localStorage.getItem(USER_TOKEN));
-//     try {
-//         if(header){
-//             const response = await axios.post(`${URL}/token-check`, header)
-//         }
-        
-//     } catch (error) {
-        
-//     }
-// }
-
-// export async function logout (){
+export  function autoLogin ({setData, setToken}){
+    //Trying to validate user token, need to think about the back-end validation and response
     
-//     //clear context
-//     localStorage.clearItem(USER_LOCAL)
-//      localStorage.clearItem(USER_TOKEN)
-//  }
+    const token =  JSON.parse(localStorage.getItem("NotATokenStorage")); 
+    const data =  JSON.parse(localStorage.getItem("NotAUserStorage"))
+        if(token && data ){   
+            setData(data)
+            setToken(token)
+            return true
+        }else{
+            return false
+        }
+    
+}
+
+export async function logout ({setData, setToken}){
+    //clear context
+    localStorage.clearItem("NotAUserStorage")
+    localStorage.clearItem("NotATokenStorage")
+    setData(null)
+    setToken(null)
+    return true
+ }

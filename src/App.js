@@ -17,7 +17,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
                     <Route path="/sign-up" element={<SignupPage />} />
-                    <Route path="/:user" element={<UserPage />} />
+                    <Route path="/board" element={<UserPage />} />
                 </Routes>
             </BrowserRouter>
         </DataProvider>
