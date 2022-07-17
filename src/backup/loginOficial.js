@@ -1,89 +1,63 @@
 import { Container, Row , Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import logo from '../assets/images/logo.png';
-import { useState } from 'react';
+import { useState, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from '../services/userHandler.js';
-import { ThreeDots } from 'react-loader-spinner';
+import { signIn } from '../services/userHandler.js';
+import { UserContext } from '../context/userContext.js';
 
-export default function SignupPage() {
-    const [name, setName] = useState('')
+export default function LoginPage() {
+    const { setData, setToken} = useContext(UserContext);
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [password, setPassword] = useState('')
     const [isDisabled, setIsDisabled] = useState(false)
     const navigate = useNavigate();
     
 
-    function validateUser(event){
+    async function validateUser(event){
         event.preventDefault();
-        setIsDisabled(true);
-
         const obj = {
-            name: name,
             email: email,
-            password: password,
-            confirmPassword: confirmPassword
+            password: password
         }
-        const response = signUp(obj);
-        if(response.status < 300){
-            
-            setTimeout(()=>{
-                setIsDisabled(false);
-                navigate('/')
-            }, "1000")
-        }
-        else{
-            alert("Your credentials are invalid. Try again.")
-            setIsDisabled(false)
-        }
-    }
-    const ToggleButton = () => {
-        if(isDisabled){
-            
-            return(
-                <button disabled={true} ><ThreeDots  color="#FFFFFF" height={17} width={"100%"} /></button>
-            )
-        }else{
-            return(
-                <button type='submit'>SIGN UP</button>
-            )
-        }
+        const response = await signIn(obj);
         
+        if(response === false){
+            setIsDisabled(false);
+            alert("Your credentials don't match.")
+            return
+        }
+        setData(response.userData)
+        setToken(response.token)
+        console.log(response)
+        setTimeout(()=>{
+            setIsDisabled(false);
+            navigate(`/banana`)
+        }, "1000")
     }
+
     return (
             <Container >
                 <Row>
                     <Col>
-                        <SignUpContent>
+                        <LoginContent>
                             <NotALogo>
                                 <img src={logo} alt='Definitely not a bear.app'/>
                                 <h1 >Not a <span className='red'>Bear</span> App</h1>
                             </NotALogo>
                             <Form onSubmit={(event)=>{validateUser(event)}}>
                                 <div className='input-wrapper'>
-                                    <div className='input-theme'>A</div>
-                                    <input
-                                    type='text'
-                                    value={name}
-                                    onChange={e=> setName(e.target.value)}
-                                    placeholder= 'Name'
-                                    required
-                                    disabled= {isDisabled} 
-                                    ></input>
+                                <div className='input-theme'>
+                                    @
                                 </div>
-                                <div className='input-wrapper'>
-                                    <div className='input-theme'>
-                                        @
-                                    </div>
-                                    <input
-                                    type='email'
-                                    value={email}
-                                    onChange={e=> setEmail(e.target.value)}
-                                    placeholder= 'E-mail'
-                                    required
-                                    disabled= {isDisabled} 
-                                    ></input>
+                                <input
+                                type='email'
+                                value={email}
+                                onChange={e=> setEmail(e.target.value)}
+                                placeholder= 'E-mail'
+                                required
+                                disabled= {isDisabled} 
+                                ></input>
                                 </div>
                                 <div className='input-wrapper'>
                                     <div className='input-theme'>*</div>
@@ -96,25 +70,15 @@ export default function SignupPage() {
                                     disabled= {isDisabled} 
                                     ></input>
                                 </div>
-                                <div className='input-wrapper'>
-                                    <div className='input-theme'>*</div>
-                                    <input
-                                    type='password'
-                                    value={confirmPassword}
-                                    onChange={e=> setConfirmPassword(e.target.value)}
-                                    placeholder= 'Confirm password'
-                                    required
-                                    disabled= {isDisabled} 
-                                    ></input>
-                                </div>
-                                <ToggleButton/>
+                                <button type='submit'>LOG IN</button>
                                 
                             </Form>
+                                <h4> Forgot password?</h4>
                                 <div className='sign-up'>
-                                    <h4>Already have an account?</h4>
-                                    <button onClick={()=>{navigate('/')}}>SIGN IN</button>
+                                    <h4>Don't have an account?</h4>
+                                    <button onClick={()=>{navigate('/sign-up')}}>SIGN UP</button>
                                 </div>
-                        </SignUpContent>
+                        </LoginContent>
                     </Col>
                     <Col >
                         <InfoSide>
@@ -131,21 +95,19 @@ export default function SignupPage() {
     )
 }
 
-const SignUpContent = styled.div`
+const LoginContent = styled.div`
     width: 100%;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     h4{
         font-weight: 600;
         font-size: 20px;
         line-height: 24px;
         color: #A3A3A3;
     }
-
     .sign-up{
         display: flex;
         justify-content: space-between;
@@ -159,7 +121,6 @@ const SignUpContent = styled.div`
             line-height: 29px;
             color: #000000;
         }
-
         button{
             width: 150px;
             height: 45px;
@@ -177,12 +138,10 @@ const SignUpContent = styled.div`
 const Form = styled.form`
     
     font-family: 'Lato';
-
     .input-wrapper{
         display: flex;
         
     }
-
     input{
         width: 388px;
         height: 45px;
@@ -207,7 +166,6 @@ const Form = styled.form`
         }
         
     }
-
     .input-theme{
         width: 50px;
         height: 45px;
@@ -223,7 +181,6 @@ const Form = styled.form`
         justify-content: center;
         align-items: center;
     }
-
     button{
         width: 438px;
         height: 45px;
@@ -236,7 +193,6 @@ const Form = styled.form`
         line-height: 16px;
         color: #FFFFFF;
     }
-
 `;
 
 const NotALogo = styled.div`
@@ -244,14 +200,12 @@ const NotALogo = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     img{
         width: 150px;
         height: 150px;
         object-fit: cover;
         margin-bottom: 10px;
     }
-
     h1{
         width: 425px;
         height: 87px;
@@ -263,7 +217,6 @@ const NotALogo = styled.div`
         color: #000000;
         margin-bottom: 120px;
     }
-
     .red{
         color: #E74D4D;
     }
@@ -288,7 +241,6 @@ const InfoSide = styled.div`
         line-height: 50px;
         margin-bottom: 30px;
     }
-
     p{
         font-family: 'Lato';
         font-size: 30px;

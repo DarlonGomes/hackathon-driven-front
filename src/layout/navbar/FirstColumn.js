@@ -3,13 +3,17 @@ import { CgNotes } from "react-icons/cg";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoTrashOutline } from "react-icons/io5";
 import { MdNoteAdd, MdOutlineBookmarks } from "react-icons/md";
-
+import { useContext } from "react";
+import { UserContext } from "../../context/userContext";
 import landscape from "../../assets/images/landscape.jpeg";
 import logo from "../../assets/images/logo.png";
 
 export default function CategoriesColumn() {
+    const obj = {title: "Not a category"}
+    const arr = [ obj, obj, obj ,obj]
     return (
         <Column landscape={landscape}>
+            <div className="fit-circle"/>
             <Profile />
             <Shortcuts />
             <Categories>
@@ -26,21 +30,22 @@ export default function CategoriesColumn() {
             </Categories>
             <Categories overflow>
                 <h3>Categories</h3>
-                <li>
-                    <MdOutlineBookmarks />
-                    <p>User's category name</p>
-                    <IoIosArrowForward />
-                </li>
+                
+                    {arr.map((e, index) => <li key={index}><MdOutlineBookmarks />
+                    <p>{e.title}</p>
+                    <IoIosArrowForward /></li>)}
+                
             </Categories>
         </Column>
     );
 }
 
 function Profile() {
+    const {data} = useContext(UserContext);
     return (
         <ProfileContainer>
             <img src={logo} alt="Not a Bear.app logo" />
-            <h3>Nome do usuário</h3>
+            <h3>{data.name}</h3>
             <p>Not a Bear</p>
         </ProfileContainer>
     );
@@ -74,6 +79,23 @@ const Column = styled.div`
     background-repeat: no-repeat;
     background-size: cover;
     overflow-y: scroll;
+    position: relative;
+    ::-webkit-scrollbar{
+        display: none;
+    }
+    -ms-overflow-style: none; 
+    scrollbar-width: none;  
+
+    .fit-circle{
+        height: 40px;
+        width: 20px;
+        border-radius: 20px 0 0 20px;
+        background-color: #FFFFFF;
+        position: absolute;
+        top: 30px;
+        left: 230px;
+        
+    }
 `;
 
 const ProfileContainer = styled.div`
@@ -139,6 +161,11 @@ const CategoriesContainer = styled.ul`
     gap: 10px;
     padding: 10px 20px;
     overflow-y: ${(props) => (props.overflow ? "scroll" : "initial")};
+    ::-webkit-scrollbar{
+        display: none;
+    }
+    -ms-overflow-style: none; 
+    scrollbar-width: none;  
 
     h3,
     li {
